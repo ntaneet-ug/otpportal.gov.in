@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OTP Verification</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #f4f7f6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .card {
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    h2 {
+      color: #333;
+      margin-bottom: 8px;
+      font-size: 22px;
+    }
+
+    p.subtitle {
+      color: #666;
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #444;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 15px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input:focus {
+      border-color: #007bff;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    button:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .status-msg {
+      margin-top: 15px;
+      font-size: 14px;
+      padding: 10px;
+      border-radius: 6px;
+      text-align: center;
+    }
+
+    .status-msg.error {
+      background-color: #f8d7da;
+      color: #842029;
+    }
+
+    .status-msg.success {
+      background-color: #d1e7dd;
+      color: #0f5132;
+    }
+
+    .status-msg.info {
+      background-color: #cff4fc;
+      color: #055160;
+    }
+
+    .registered-badge {
+      font-size: 12px;
+      color: #6c757d;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h2>Mobile Verification</h2>
+    <p class="subtitle">Verify your registered mobile number to proceed.</p>
+
+    <!-- Step 1: Mobile Input Form -->
+    <div id="step-mobile">
+      <div class="form-group">
+        <label for="mobileInput">Indian Mobile Number</label>
+        <input 
+          type="tel" 
+          id="mobileInput" 
+          placeholder="+91 7439108810" 
+          value="+91 7439108810" 
+        />
+        <p class="registered-badge">Authorized number: <strong>+91 7439108810</strong></p>
+      </div>
+      <button id="sendOtpBtn" onclick="sendOTP()">Send OTP</button>
+    </div>
+
+    <!-- Step 2: OTP Input Form -->
+    <div id="step-otp" class="hidden">
+      <div class="form-group">
+        <label for="otpInput">Enter 6-Digit OTP</label>
+        <input 
+          type="text" 
+          id="otpInput" 
+          placeholder="e.g. 123456" 
+          maxlength="6" 
+        />
+      </div>
+      <button id="verifyOtpBtn" onclick="verifyOTP()">Verify OTP & Open Link</button>
+    </div>
+
+    <!-- Feedback Message Box -->
+    <div id="messageBox" class="status-msg hidden"></div>
+  </div>
+
+  <script>
+    // Configuration
+    const REGISTERED_NUMBER = "7439108810";
+    const TARGET_URL = "https://www.instagram.com/?hl=en";
+    
+    let generatedOTP = null;
+
+    // Helper: Clean phone number inputs to standard digits
+    function normalizePhoneNumber(phone) {
+      return phone.replace(/\D/g, '').slice(-10); // Extract last 10 digits
+    }
+
+    // Display status messages
+    function showMessage(text, type) {
+      const msgBox = document.getElementById("messageBox");
+      msgBox.className = `status-msg ${type}`;
+      msgBox.innerHTML = text;
+      msgBox.classList.remove("hidden");
+    }
+
+    // Step 1: Send OTP Logic
+    function sendOTP() {
+      const inputVal = document.getElementById("mobileInput").value;
+      const cleanedNumber = normalizePhoneNumber(inputVal);
+
+      // Check if entered number matches the registered target number
+      if (cleanedNumber !== REGISTERED_NUMBER) {
+        showMessage("Error: Unregistered mobile number. Please use +91 7439108810.", "error");
+        return;
+      }
+
+      // Generate a random 6-digit OTP
+      generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
+
+      // Switch view to OTP input
+      document.getElementById("step-mobile").classList.add("hidden");
+      document.getElementById("step-otp").classList.remove("hidden");
+
+      // Show alert & info banner simulating SMS dispatch
+      showMessage(`OTP sent to +91 7439108810.<br><strong>Simulated SMS OTP: ${generatedOTP}</strong>`, "info");
+    }
+
+    // Step 2: Verify OTP Logic
+    function verifyOTP() {
+      const enteredOTP = document.getElementById("otpInput").value.trim();
+
+      if (!enteredOTP) {
+        showMessage("Please enter the 6-digit OTP.", "error");
+        return;
+      }
+
+      if (enteredOTP === generatedOTP) {
+        showMessage("OTP Verified Successfully! Opening your Score Card...", "success");
+
+        // Open the target URL in a new tab
+        setTimeout(() => {
+          window.open(TARGET_URL, "_blank");
+        }, 1000);
+      } else {
+        showMessage("Invalid OTP. Please check the simulated code and try again.", "error");
+      }
+    }
+  </script>
+</body>
+</html>
