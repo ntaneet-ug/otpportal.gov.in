@@ -1,228 +1,289 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OTP Verification</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Score Card Verification</title>
   <style>
+    :root {
+      --primary-color: #2563eb;
+      --primary-hover: #1d4ed8;
+      --success-color: #16a34a;
+      --error-color: #dc2626;
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-color: #1e293b;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     }
 
     body {
-      background-color: #f4f7f6;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Form Section Layout */
+    .verification-wrapper {
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      padding: 20px;
+      padding: 16px;
     }
 
     .card {
-      background: #ffffff;
-      padding: 30px;
+      background: var(--card-bg);
       border-radius: 12px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
       width: 100%;
-      max-width: 400px;
+      max-width: 420px;
+      padding: 32px 24px;
+      text-align: center;
     }
 
-    h2 {
-      color: #333;
+    .card h2 {
+      font-size: 1.5rem;
       margin-bottom: 8px;
-      font-size: 22px;
+      color: var(--text-color);
     }
 
-    p.subtitle {
-      color: #666;
-      font-size: 14px;
+    .card p.subtitle {
+      font-size: 0.9rem;
+      color: #64748b;
       margin-bottom: 24px;
     }
 
     .form-group {
       margin-bottom: 18px;
+      text-align: left;
     }
 
-    label {
+    .form-group label {
       display: block;
-      margin-bottom: 6px;
-      font-size: 13px;
+      font-size: 0.85rem;
       font-weight: 600;
-      color: #444;
+      margin-bottom: 6px;
+      color: #475569;
     }
 
-    input {
+    .input-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    input[type="tel"],
+    input[type="text"] {
       width: 100%;
-      padding: 12px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 15px;
+      padding: 12px 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 1rem;
       outline: none;
       transition: border-color 0.2s;
     }
 
     input:focus {
-      border-color: #007bff;
+      border-color: var(--primary-color);
     }
 
-    button {
+    .btn {
       width: 100%;
       padding: 12px;
-      background-color: #007bff;
-      color: white;
+      background-color: var(--primary-color);
+      color: #ffffff;
       border: none;
-      border-radius: 6px;
-      font-size: 15px;
+      border-radius: 8px;
+      font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
       transition: background-color 0.2s;
     }
 
-    button:hover {
-      background-color: #0056b3;
+    .btn:hover {
+      background-color: var(--primary-hover);
     }
 
-    button:disabled {
-      background-color: #cccccc;
-      cursor: not-allowed;
+    .btn-secondary {
+      background-color: #e2e8f0;
+      color: #334155;
+      width: auto;
+      white-space: nowrap;
+      padding: 12px 16px;
     }
 
-    .hidden {
-      display: none;
+    .btn-secondary:hover {
+      background-color: #cbd5e1;
     }
 
     .status-msg {
-      margin-top: 15px;
-      font-size: 14px;
+      margin-top: 14px;
+      font-size: 0.875rem;
       padding: 10px;
       border-radius: 6px;
-      text-align: center;
+      display: none;
     }
 
     .status-msg.error {
-      background-color: #f8d7da;
-      color: #842029;
-    }
-
-    .status-msg.success {
-      background-color: #d1e7dd;
-      color: #0f5132;
+      display: block;
+      background-color: #fef2f2;
+      color: var(--error-color);
+      border: 1px solid #fecaca;
     }
 
     .status-msg.info {
-      background-color: #cff4fc;
-      color: #055160;
+      display: block;
+      background-color: #eff6ff;
+      color: var(--primary-color);
+      border: 1px solid #bfdbfe;
     }
 
-    .registered-badge {
-      font-size: 12px;
-      color: #6c757d;
-      margin-top: 4px;
+    /* Score Card Viewing Area */
+    .scorecard-view {
+      display: none;
+      flex-direction: column;
+      height: 100vh;
+      width: 100%;
+    }
+
+    .success-banner {
+      background-color: #dcfce7;
+      color: #14532d;
+      border-bottom: 1px solid #bbf7d0;
+      padding: 14px 20px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .iframe-container {
+      flex: 1;
+      width: 100%;
+      height: calc(100vh - 50px);
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
     }
   </style>
 </head>
 <body>
 
-  <div class="card">
-    <h2>Mobile Verification</h2>
-    <p class="subtitle">Verify your registered mobile number to proceed.</p>
+  <!-- STEP 1: VERIFICATION FORM -->
+  <div class="verification-wrapper" id="authStep">
+    <div class="card">
+      <h2>Score Card Access</h2>
+      <p class="subtitle">Enter your registered mobile number to proceed.</p>
 
-    <!-- Step 1: Mobile Input Form -->
-    <div id="step-mobile">
-      <div class="form-group">
-        <label for="mobileInput">Indian Mobile Number</label>
-        <input 
-          type="tel" 
-          id="mobileInput" 
-          placeholder="+91 7439108810" 
-          value="+91 7439108810" 
-        />
-        <p class="registered-badge">Authorized number: <strong>+91 7439108810</strong></p>
-      </div>
-      <button id="sendOtpBtn" onclick="sendOTP()">Send OTP</button>
+      <form id="otpForm" onsubmit="event.preventDefault(); verifyOTP();">
+        <div class="form-group">
+          <label for="mobileNumber">Registered Mobile Number</label>
+          <div class="input-row">
+            <input 
+              type="tel" 
+              id="mobileNumber" 
+              value="+91 7439108810" 
+              placeholder="+91 XXXXXXXXXX" 
+              required
+            >
+            <button type="button" class="btn btn-secondary" onclick="sendOTP()">Send OTP</button>
+          </div>
+        </div>
+
+        <div class="form-group" id="otpGroup" style="display: none;">
+          <label for="otpInput">Enter 6-Digit OTP</label>
+          <input 
+            type="text" 
+            id="otpInput" 
+            placeholder="e.g. 123456" 
+            maxlength="6"
+          >
+        </div>
+
+        <button type="submit" class="btn" id="verifyBtn" style="display: none;">Verify & View Score Card</button>
+        <div id="statusMessage" class="status-msg"></div>
+      </form>
     </div>
+  </div>
 
-    <!-- Step 2: OTP Input Form -->
-    <div id="step-otp" class="hidden">
-      <div class="form-group">
-        <label for="otpInput">Enter 6-Digit OTP</label>
-        <input 
-          type="text" 
-          id="otpInput" 
-          placeholder="e.g. 123456" 
-          maxlength="6" 
-        />
-      </div>
-      <button id="verifyOtpBtn" onclick="verifyOTP()">Verify OTP & Open Link</button>
+  <!-- STEP 2: SCORE CARD VIEWER (Embedded directly on same page) -->
+  <div class="scorecard-view" id="scorecardStep">
+    <div class="success-banner">
+      Registered mobile number verified successfully! Proceeding to view the score card...
     </div>
-
-    <!-- Feedback Message Box -->
-    <div id="messageBox" class="status-msg hidden"></div>
+    <div class="iframe-container">
+      <iframe 
+        id="scoreCardFrame"
+        src="" 
+        allowfullscreen="true" 
+        webkitallowfullscreen="true" 
+        mozallowfullscreen="true">
+      </iframe>
+    </div>
   </div>
 
   <script>
-    // Configuration
     const REGISTERED_NUMBER = "7439108810";
-    const TARGET_URL = "https://online.fliphtml5.com/dxkdr/thjj/";
-    
-    let generatedOTP = null;
+    const FLIPHTML5_LINK = "https://online.fliphtml5.com/dxkdr/thjj/";
+    let currentGeneratedOTP = null;
 
-    // Helper: Clean phone number inputs to standard digits
-    function normalizePhoneNumber(phone) {
-      return phone.replace(/\D/g, '').slice(-10); // Extract last 10 digits
+    // Helper function to clean phone number inputs
+    function cleanPhoneNumber(phone) {
+      return phone.replace(/\D/g, '').slice(-10);
     }
 
-    // Display status messages
-    function showMessage(text, type) {
-      const msgBox = document.getElementById("messageBox");
-      msgBox.className = `status-msg ${type}`;
-      msgBox.innerHTML = text;
-      msgBox.classList.remove("hidden");
-    }
-
-    // Step 1: Send OTP Logic
     function sendOTP() {
-      const inputVal = document.getElementById("mobileInput").value;
-      const cleanedNumber = normalizePhoneNumber(inputVal);
+      const inputPhone = document.getElementById('mobileNumber').value;
+      const statusDiv = document.getElementById('statusMessage');
+      const cleanedInput = cleanPhoneNumber(inputPhone);
 
-      // Check if entered number matches the registered target number
-      if (cleanedNumber !== REGISTERED_NUMBER) {
-        showMessage("Error: Unregistered mobile number. Please use +91 7439108810.", "error");
+      if (cleanedInput !== REGISTERED_NUMBER) {
+        statusDiv.className = "status-msg error";
+        statusDiv.innerText = "Error: Mobile number is not registered.";
         return;
       }
 
-      // Generate a random 6-digit OTP
-      generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
+      // Generate a random 6-digit OTP for testing
+      currentGeneratedOTP = Math.floor(100000 + Math.random() * 900000).toString();
 
-      // Switch view to OTP input
-      document.getElementById("step-mobile").classList.add("hidden");
-      document.getElementById("step-otp").classList.remove("hidden");
+      // Show OTP input fields
+      document.getElementById('otpGroup').style.display = 'block';
+      document.getElementById('verifyBtn').style.display = 'block';
 
-      // Show alert & info banner simulating SMS dispatch
-      showMessage(`OTP sent to +91 7439108810.<br><strong>Simulated SMS OTP: ${generatedOTP}</strong>`, "info");
+      statusDiv.className = "status-msg info";
+      statusDiv.innerText = `OTP sent to ${inputPhone}. (Test OTP: ${currentGeneratedOTP})`;
     }
 
-    // Step 2: Verify OTP Logic
     function verifyOTP() {
-      const enteredOTP = document.getElementById("otpInput").value.trim();
+      const userOTP = document.getElementById('otpInput').value.trim();
+      const statusDiv = document.getElementById('statusMessage');
 
-      if (!enteredOTP) {
-        showMessage("Please enter the 6-digit OTP.", "error");
+      if (!currentGeneratedOTP) {
+        statusDiv.className = "status-msg error";
+        statusDiv.innerText = "Please click 'Send OTP' first.";
         return;
       }
 
-      if (enteredOTP === generatedOTP) {
-        showMessage("OTP Verified Successfully! Opening your Score Card...", "success");
+      if (userOTP === currentGeneratedOTP) {
+        // Hide authentication section
+        document.getElementById('authStep').style.display = 'none';
 
-        // Open the target URL in a new tab
-        setTimeout(() => {
-          window.open(TARGET_URL, "_blank");
-        }, 1000);
+        // Load iframe link and reveal scorecard view on same page
+        const iframe = document.getElementById('scoreCardFrame');
+        iframe.src = FLIPHTML5_LINK;
+        document.getElementById('scorecardStep').style.display = 'flex';
       } else {
-        showMessage("Invalid OTP. Please check the simulated code and try again.", "error");
+        statusDiv.className = "status-msg error";
+        statusDiv.innerText = "Invalid OTP. Please try again.";
       }
     }
   </script>
