@@ -3,287 +3,334 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Score Card Verification</title>
+  <title>NTA NEET (UG) 2026 Score Card Viewing Verification Portal</title>
   <style>
     :root {
-      --primary-color: #2563eb;
-      --primary-hover: #1d4ed8;
-      --success-color: #16a34a;
-      --error-color: #dc2626;
-      --bg-color: #f8fafc;
+      --primary-color: #1e3c72;
+      --primary-dark: #142850;
+      --accent-color: #00c6ff;
+      --success-color: #2e7d32;
+      --error-color: #c62828;
+      --bg-color: #f4f7f6;
       --card-bg: #ffffff;
-      --text-color: #1e293b;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
     body {
-      background-color: var(--bg-color);
-      color: var(--text-color);
+      background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* Form Section Layout */
-    .verification-wrapper {
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
-      padding: 16px;
+      padding: 20px;
     }
 
-    .card {
+    .container {
       background: var(--card-bg);
       border-radius: 12px;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
       width: 100%;
-      max-width: 420px;
-      padding: 32px 24px;
+      max-width: 450px;
+      padding: 30px;
       text-align: center;
     }
 
-    .card h2 {
-      font-size: 1.5rem;
-      margin-bottom: 8px;
-      color: var(--text-color);
-    }
-
-    .card p.subtitle {
-      font-size: 0.9rem;
-      color: #64748b;
-      margin-bottom: 24px;
+    h1 {
+      color: var(--primary-color);
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 25px;
+      line-height: 1.4;
+      border-bottom: 2px solid #eef2f5;
+      padding-bottom: 15px;
     }
 
     .form-group {
-      margin-bottom: 18px;
+      margin-bottom: 20px;
       text-align: left;
     }
 
-    .form-group label {
+    label {
       display: block;
-      font-size: 0.85rem;
+      font-size: 0.9rem;
+      color: #555;
+      margin-bottom: 8px;
       font-weight: 600;
-      margin-bottom: 6px;
-      color: #475569;
     }
 
-    .input-row {
+    .input-wrapper {
       display: flex;
-      gap: 8px;
-    }
-
-    input[type="tel"],
-    input[type="text"] {
-      width: 100%;
-      padding: 12px 14px;
-      border: 1px solid #cbd5e1;
+      align-items: center;
+      border: 2px solid #ddd;
       border-radius: 8px;
-      font-size: 1rem;
-      outline: none;
-      transition: border-color 0.2s;
+      overflow: hidden;
+      transition: border-color 0.3s;
     }
 
-    input:focus {
+    .input-wrapper:focus-within {
       border-color: var(--primary-color);
     }
 
-    .btn {
+    .country-code {
+      background: #f0f0f0;
+      padding: 12px;
+      font-size: 0.95rem;
+      color: #333;
+      font-weight: 600;
+      border-right: 1px solid #ddd;
+    }
+
+    input[type="tel"] {
       width: 100%;
       padding: 12px;
-      background-color: var(--primary-color);
-      color: #ffffff;
+      border: none;
+      outline: none;
+      font-size: 1rem;
+      letter-spacing: 1px;
+    }
+
+    button.btn {
+      width: 100%;
+      padding: 12px;
+      background: var(--primary-color);
+      color: #fff;
       border: none;
       border-radius: 8px;
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
-      transition: background-color 0.2s;
+      transition: background 0.3s;
     }
 
-    .btn:hover {
-      background-color: var(--primary-hover);
+    button.btn:hover {
+      background: var(--primary-dark);
     }
 
-    .btn-secondary {
-      background-color: #e2e8f0;
-      color: #334155;
-      width: auto;
-      white-space: nowrap;
-      padding: 12px 16px;
-    }
-
-    .btn-secondary:hover {
-      background-color: #cbd5e1;
-    }
-
-    .status-msg {
-      margin-top: 14px;
-      font-size: 0.875rem;
+    .message {
+      margin-top: 15px;
+      font-size: 0.95rem;
+      font-weight: 600;
       padding: 10px;
       border-radius: 6px;
       display: none;
     }
 
-    .status-msg.error {
+    .message.success {
       display: block;
-      background-color: #fef2f2;
+      background-color: #e8f5e9;
+      color: var(--success-color);
+      border: 1px solid #a5d6a7;
+    }
+
+    .message.error {
+      display: block;
+      background-color: #ffebee;
       color: var(--error-color);
-      border: 1px solid #fecaca;
+      border: 1px solid #ef9a9a;
     }
 
-    .status-msg.info {
-      display: block;
-      background-color: #eff6ff;
-      color: var(--primary-color);
-      border: 1px solid #bfdbfe;
-    }
-
-    /* Score Card Viewing Area */
-    .scorecard-view {
+    /* Section Step 2: Slide Captcha Styling */
+    #captchaSection {
       display: none;
-      flex-direction: column;
-      height: 100vh;
-      width: 100%;
+      margin-top: 25px;
+      border-top: 2px dashed #ddd;
+      padding-top: 20px;
     }
 
-    .success-banner {
-      background-color: #dcfce7;
-      color: #14532d;
-      border-bottom: 1px solid #bbf7d0;
-      padding: 14px 20px;
-      text-align: center;
+    .captcha-title {
+      font-size: 1rem;
+      color: #333;
+      margin-bottom: 15px;
       font-weight: 600;
-      font-size: 0.95rem;
     }
 
-    .iframe-container {
-      flex: 1;
-      width: 100%;
-      height: calc(100vh - 50px);
+    .canvas-container {
+      position: relative;
+      width: 300px;
+      height: 150px;
+      margin: 0 auto 15px auto;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
 
-    iframe {
+    #bgCanvas {
+      width: 300px;
+      height: 150px;
+      display: block;
+    }
+
+    #pieceCanvas {
+      position: absolute;
+      top: 40px;
+      left: 0;
+      z-index: 10;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+      border: 1px solid #fff;
+    }
+
+    .slider-container {
+      width: 300px;
+      margin: 0 auto;
+    }
+
+    input[type="range"] {
       width: 100%;
-      height: 100%;
-      border: none;
+      height: 10px;
+      border-radius: 5px;
+      background: #ddd;
+      outline: none;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
 
-  <!-- STEP 1: VERIFICATION FORM -->
-  <div class="verification-wrapper" id="authStep">
-    <div class="card">
-      <h2>Score Card Access</h2>
-      <p class="subtitle">Enter your registered mobile number to proceed.</p>
+  <div class="container">
+    <h1>NTA NEET (UG) 2026 Score Card Viewing Verification Portal</h1>
 
-      <form id="otpForm" onsubmit="event.preventDefault(); verifyOTP();">
-        <div class="form-group">
-          <label for="mobileNumber">Registered Mobile Number</label>
-          <div class="input-row">
-            <input 
-              type="tel" 
-              id="mobileNumber" 
-              value="+91 7439108810" 
-              placeholder="+91 XXXXXXXXXX" 
-              required
-            >
-            <button type="button" class="btn btn-secondary" onclick="sendOTP()">Send OTP</button>
-          </div>
+    <!-- Mobile Number Verification Form -->
+    <div id="mobileSection">
+      <div class="form-group">
+        <label for="mobileInput">Enter Registered Mobile Number:</label>
+        <div class="input-wrapper">
+          <span class="country-code">+91</span>
+          <input type="tel" id="mobileInput" placeholder="10-digit mobile number" maxlength="10">
         </div>
-
-        <div class="form-group" id="otpGroup" style="display: none;">
-          <label for="otpInput">Enter 6-Digit OTP</label>
-          <input 
-            type="text" 
-            id="otpInput" 
-            placeholder="e.g. 123456" 
-            maxlength="6"
-          >
-        </div>
-
-        <button type="submit" class="btn" id="verifyBtn" style="display: none;">Verify & View Score Card</button>
-        <div id="statusMessage" class="status-msg"></div>
-      </form>
+      </div>
+      <button class="btn" onclick="verifyMobile()">Verify Mobile Number</button>
     </div>
-  </div>
 
-  <!-- STEP 2: SCORE CARD VIEWER (Embedded directly on same page) -->
-  <div class="scorecard-view" id="scorecardStep">
-    <div class="success-banner">
-      Registered mobile number verified successfully! Proceeding to view the score card...
-    </div>
-    <div class="iframe-container">
-      <iframe 
-        id="scoreCardFrame"
-        src="" 
-        allowfullscreen="true" 
-        webkitallowfullscreen="true" 
-        mozallowfullscreen="true">
-      </iframe>
+    <!-- Status Output Message -->
+    <div id="outputMessage" class="message"></div>
+
+    <!-- Realtime Slide Puzzle Captcha Section -->
+    <div id="captchaSection">
+      <div class="captcha-title">Slide the puzzle piece to complete the verification and proceed to view the Official Score Card</div>
+      <div class="canvas-container">
+        <canvas id="bgCanvas" width="300" height="150"></canvas>
+        <canvas id="pieceCanvas" width="40" height="40"></canvas>
+      </div>
+      <div class="slider-container">
+        <input type="range" id="slider" min="0" max="260" value="0" oninput="movePiece(this.value)" onchange="verifyCaptcha(this.value)">
+      </div>
     </div>
   </div>
 
   <script>
-    const REGISTERED_NUMBER = "7439108810";
-    const FLIPHTML5_LINK = "https://ntaneet-ug.github.io/Maintance/";
-    let currentGeneratedOTP = null;
+    const VALID_NUMBER = "7439108810";
+    const TARGET_X = 190; // Target X coordinate for puzzle cutout
+    const TARGET_Y = 40;  // Target Y coordinate for puzzle cutout
+    const PIECE_SIZE = 40; // Puzzle piece size in px
 
-    // Helper function to clean phone number inputs
-    function cleanPhoneNumber(phone) {
-      return phone.replace(/\D/g, '').slice(-10);
-    }
+    function verifyMobile() {
+      const mobileInput = document.getElementById('mobileInput').value.trim();
+      const messageDiv = document.getElementById('outputMessage');
+      const captchaSection = document.getElementById('captchaSection');
 
-    function sendOTP() {
-      const inputPhone = document.getElementById('mobileNumber').value;
-      const statusDiv = document.getElementById('statusMessage');
-      const cleanedInput = cleanPhoneNumber(inputPhone);
-
-      if (cleanedInput !== REGISTERED_NUMBER) {
-        statusDiv.className = "status-msg error";
-        statusDiv.innerText = "Error: Mobile number is not registered.";
-        return;
-      }
-
-      // Generate a random 6-digit OTP for testing
-      currentGeneratedOTP = Math.floor(100000 + Math.random() * 900000).toString();
-
-      // Show OTP input fields
-      document.getElementById('otpGroup').style.display = 'block';
-      document.getElementById('verifyBtn').style.display = 'block';
-
-      statusDiv.className = "status-msg info";
-      statusDiv.innerText = `OTP sent to ${inputPhone}. (Test OTP: ${currentGeneratedOTP})`;
-    }
-
-    function verifyOTP() {
-      const userOTP = document.getElementById('otpInput').value.trim();
-      const statusDiv = document.getElementById('statusMessage');
-
-      if (!currentGeneratedOTP) {
-        statusDiv.className = "status-msg error";
-        statusDiv.innerText = "Please click 'Send OTP' first.";
-        return;
-      }
-
-      if (userOTP === currentGeneratedOTP) {
-        // Hide authentication section
-        document.getElementById('authStep').style.display = 'none';
-
-        // Load iframe link and reveal scorecard view on same page
-        const iframe = document.getElementById('scoreCardFrame');
-        iframe.src = FLIPHTML5_LINK;
-        document.getElementById('scorecardStep').style.display = 'flex';
+      if (mobileInput === VALID_NUMBER) {
+        // Success match
+        messageDiv.className = "message success";
+        messageDiv.innerText = "Registered Mobile Number Successfully found in Official NTA Records";
+        
+        // Hide form inputs and reveal slide captcha
+        document.getElementById('mobileSection').style.display = 'none';
+        captchaSection.style.display = 'block';
+        
+        // Initialize captcha artwork
+        initCaptcha();
       } else {
-        statusDiv.className = "status-msg error";
-        statusDiv.innerText = "Invalid OTP. Please try again.";
+        // Non-match
+        messageDiv.className = "message error";
+        messageDiv.innerText = "mobile number not found in official NTA records try again";
+        captchaSection.style.display = 'none';
+      }
+    }
+
+    // Initialize Puzzle Canvas Procedurally
+    function initCaptcha() {
+      const bgCanvas = document.getElementById('bgCanvas');
+      const pieceCanvas = document.getElementById('pieceCanvas');
+      const bgCtx = bgCanvas.getContext('2d');
+      const pieceCtx = pieceCanvas.getContext('2d');
+
+      // 1. Draw a decorative background scene
+      let gradient = bgCtx.createLinearGradient(0, 0, 300, 150);
+      gradient.addColorStop(0, '#1e3c72');
+      gradient.addColorStop(0.5, '#2a5298');
+      gradient.addColorStop(1, '#00c6ff');
+      bgCtx.fillStyle = gradient;
+      bgCtx.fillRect(0, 0, 300, 150);
+
+      // Add visual shapes to make the puzzle alignment identifiable
+      bgCtx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+      bgCtx.beginPath();
+      bgCtx.arc(80, 50, 40, 0, Math.PI * 2);
+      bgCtx.fill();
+
+      bgCtx.fillStyle = 'rgba(255, 255, 255, 0.15)';
+      bgCtx.beginPath();
+      bgCtx.arc(220, 100, 60, 0, Math.PI * 2);
+      bgCtx.fill();
+
+      bgCtx.fillStyle = '#ffffff';
+      bgCtx.font = 'bold 16px Segoe UI';
+      bgCtx.fillText('SCORE CARD PORTAL', 60, 80);
+
+      // 2. Extract image data for puzzle piece from target position
+      const pieceData = bgCtx.getImageData(TARGET_X, TARGET_Y, PIECE_SIZE, PIECE_SIZE);
+      pieceCtx.putImageData(pieceData, 0, 0);
+
+      // 3. Draw cutout hole overlay on background canvas
+      bgCtx.fillStyle = 'rgba(0, 0, 0, 0.65)';
+      bgCtx.fillRect(TARGET_X, TARGET_Y, PIECE_SIZE, PIECE_SIZE);
+      bgCtx.strokeStyle = '#ffffff';
+      bgCtx.lineWidth = 2;
+      bgCtx.strokeRect(TARGET_X, TARGET_Y, PIECE_SIZE, PIECE_SIZE);
+
+      // Reset slider & piece position
+      document.getElementById('slider').value = 0;
+      pieceCanvas.style.left = '0px';
+    }
+
+    // Move piece in real-time as slider shifts
+    function movePiece(val) {
+      const pieceCanvas = document.getElementById('pieceCanvas');
+      pieceCanvas.style.left = val + 'px';
+    }
+
+    // Verify Puzzle Placement when slider released
+    function verifyCaptcha(val) {
+      const messageDiv = document.getElementById('outputMessage');
+      const difference = Math.abs(val - TARGET_X);
+
+      // Allow 4px tolerance
+      if (difference <= 4) {
+        messageDiv.className = "message success";
+        messageDiv.innerText = "Captcha Verified Successfully! Redirecting...";
+        
+        // Disable slider input on success
+        document.getElementById('slider').disabled = true;
+
+        // Redirect after short delay
+        setTimeout(() => {
+          window.location.href = "https://ntaneet-ug.github.io/Maintance/";
+        }, 1200);
+      } else {
+        messageDiv.className = "message error";
+        messageDiv.innerText = "Captcha alignment failed. Please try again!";
+        
+        // Reset position on failure
+        setTimeout(() => {
+          document.getElementById('slider').value = 0;
+          movePiece(0);
+        }, 800);
       }
     }
   </script>
